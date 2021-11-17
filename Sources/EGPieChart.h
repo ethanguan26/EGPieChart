@@ -6,6 +6,7 @@
 //  https://github.com/GuanyiLL/EGPieChart
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 //! Project version number for EGPieChartView.
 FOUNDATION_EXPORT double EGPieChartVersionNumber;
