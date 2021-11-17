@@ -1,0 +1,210 @@
+//
+//  EGPieChartRender.swift
+//  EGPieChart
+//
+//  Copyright (c) 2021 Ethan Guan
+//  https://github.com/GuanyiLL/EGPieChart
+
+import Foundation
+import UIKit
+import CoreGraphics
+
+open class EGPieChartRender {
+    open weak var chartView: EGPieChartView?
+    
+    public init(_ chart: EGPieChartView) {
+        chartView = chart
+    }
+    
+    open func drawSlices(_ context: CGContext) {
+        guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
+        let outerRadius = chart.outerRadius
+        let innerRadius = chart.innerRadius
+        
+        let rotation = chart.rotation
+        let center = chart.renderCenter
+    
+        var innerArcEndPoint = CGPoint(x: center.x +  innerRadius * Double(cos(rotation.toRadian)),
+                                       y: center.y +  innerRadius * Double(sin(rotation.toRadian)))
+        
+        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * Double(cos(rotation.toRadian)),
+                                         y: center.y +  outerRadius * Double(sin(rotation.toRadian)))
+
+        var innerArcStartPoint = CGPoint.zero
+        var outerArcEndPoint = CGPoint.zero
+        
+        context.saveGState()
+        defer { context.restoreGState() }
+        
+        for i in 0..<datas.count {
+            defer {
+                outerArcStartPoint = outerArcEndPoint
+                innerArcEndPoint =  innerArcStartPoint
+            }
+            
+            let startAngle = (rotation + datas.drawAngles[i] - datas.sliceAngles[i]).toRadian
+            let endAngle = (rotation + datas.drawAngles[i]).toRadian
+
+            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * Double(cos(endAngle)),
+                                       y: center.y +  outerRadius * Double(sin(endAngle)))
+
+            innerArcStartPoint = CGPoint(x: center.x + innerRadius * Double(cos(endAngle)),
+                                         y: center.y + innerRadius * Double(sin(endAngle)))
+            
+            context.move(to: innerArcEndPoint)
+            context.addLine(to: outerArcStartPoint)
+            
+            // In a flipped coordinate system (the default for UIView drawing methods in iOS), specifying a clockwise arc results in a counterclockwise arc after the transformation is applied.
+            // https://developer.apple.com/documentation/coregraphics/cgcontext/2427129-addarc
+            context.addArc(center: center,
+                           radius: outerRadius,
+                           startAngle: startAngle,
+                           endAngle: endAngle,
+                           clockwise: false)
+            context.addLine(to: innerArcStartPoint)
+            context.addArc(center: center,
+                           radius: innerRadius,
+                           startAngle: endAngle,
+                           endAngle: startAngle,
+                           clockwise: true)
+//            context.closePath()   // It seems not necessary
+            
+            context.setStrokeColor(datas.fillColors[i].cgColor)
+            context.setFillColor(datas.fillColors[i].cgColor)
+            
+            context.setLineWidth(1 / UIScreen.main.scale)
+            context.drawPath(using: .fillStroke)
+        }
+    }
+    
+    open func drawValues(_ context: CGContext) {
+        guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
+        
+        context.saveGState()
+        defer { context.restoreGState() }
+        
+        let center = chart.renderCenter
+        let outerRadius = chart.outerRadius
+        let innerRadius = chart.innerRadius
+        
+        for i in 0..<datas.count {
+            let sweepAngle = datas.sliceAngles[i] * (1 - chart.valueOffsetX)
+            let valueText = NSString(string: datas[i].content ?? String(format: "%.2f%%", datas.persents[i] * 100))
+            let attributes: [NSAttributedString.Key: Any] = [.font: datas[i].valueFont, .foregroundColor: datas[i].valueTextColor]
+            let size = valueText.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil).size
+            let r: CGFloat
+            if innerRadius > 0 {
+                r = innerRadius + (outerRadius - innerRadius) * chart.valueOffsetY
+            } else {
+                r = outerRadius * chart.valueOffsetY
+            }
+            
+            let targetAngle = chart.rotation + datas.drawAngles[i] - sweepAngle
+            let targetX = center.x + r * Double(cos(targetAngle.toRadian))
+            let targetY = center.y + r * Double(sin(targetAngle.toRadian))
+            let p = CGPoint(x: targetX, y: targetY)
+            
+            valueText.draw(
+                at: CGPoint(x: p.x - size.width / 2, y: p.y - size.height / 2),
+                withAttributes: attributes)
+        }
+    }
+    
+    open func drawOutsideValues(_ context: CGContext) {
+        guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
+        let center = chart.renderCenter
+        let outerRadius = chart.outerRadius
+        
+        context.saveGState()
+        defer { context.restoreGState() }
+        
+        for i in 0..<datas.count {
+            
+            let sweepAngle = datas.sliceAngles[i] * (1 - chart.line1AnglarOffset)
+            
+            let value = NSString(string: datas[i].outsideContent ?? String(format: "%.2f", datas[i].value))
+            
+            let attributes: [NSAttributedString.Key: Any] = [.font: datas[i].outsideValueFont, .foregroundColor: datas[i].outsideValueTextColor]
+            
+            let size = value.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil).size
+            
+            var r = outerRadius * chart.line1Persentage
+            let line1Length = chart.line1Lenght
+            var line2Length = chart.line2Length
+            
+            let targetAngle = (chart.rotation + datas.drawAngles[i] - sweepAngle).toRadian
+            var targetX = center.x + r * Double(cos(targetAngle))
+            var targetY = center.y + r * Double(sin(targetAngle))
+            let line1StartPoint = CGPoint(x: targetX, y: targetY)
+            
+            r += line1Length
+            targetX = center.x + r * Double(cos(targetAngle))
+            targetY = center.y + r * Double(sin(targetAngle))
+            let line1EndPoint = CGPoint(x: targetX, y: targetY)
+        
+            var line2EndPoint = CGPoint.zero
+            var textPosition: CGPoint
+            
+            if (line1EndPoint.x < center.x) {
+                if (line1EndPoint.x - size.width - line2Length < 0) {
+                    line2Length = max(0 ,line1EndPoint.x - size.width)
+                }
+                line2EndPoint = CGPoint(x: line1EndPoint.x - line2Length, y: line1EndPoint.y)
+                textPosition = CGPoint(x: line2EndPoint.x - size.width, y: line2EndPoint.y - size.height / 2)
+            } else {
+                if (line1EndPoint.x + line2Length + size.width > chart.bounds.width) {
+                    line2Length = max(0, chart.frame.width - size.width - line1EndPoint.x)
+                }
+                line2EndPoint = CGPoint(x: line1EndPoint.x + line2Length, y: line1EndPoint.y);
+                textPosition = CGPoint(x: line2EndPoint.x , y: line2EndPoint.y - size.height / 2)
+            }
+            context.move(to: line1StartPoint)
+            context.addLine(to: line1EndPoint)
+            context.addLine(to: line2EndPoint)
+            context.drawPath(using: .stroke)
+            value.draw(at: textPosition, withAttributes: attributes)
+        }
+    }
+    
+    open func drawCenter(_ context: CGContext) {
+        guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
+        let center = chart.renderCenter
+        let r = chart.innerRadius
+        
+        context.saveGState()
+        defer { context.restoreGState() }
+        
+        let centerRect = CGRect(x: center.x - r, y: center.y - r, width: r * 2, height: r * 2)
+        
+        context.addEllipse(in: centerRect)
+        context.setFillColor(chart.centerFillColor.cgColor)
+        context.drawPath(using: .fill)
+        
+        guard let centerText = datas.centerAttributeString else {
+            return
+        }
+        
+        let size = centerText.boundingRect(with: centerRect.size, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+        let position = CGPoint(x: center.x - size.width / 2, y: center.y - size.height / 2)
+        centerText.draw(at: position)
+    }
+    
+    open func angleForPoint(_ p: CGPoint) -> CGFloat {
+        guard let chart = chartView else { return 0 }
+        let c = chart.renderCenter
+        let x = p.x - c.x
+        let y = p.y - c.y
+        let length = sqrt(x * x + y * y)
+        let r = acos(y / length)
+        var angle = r.toDegree
+        if p.x > c.x {
+            angle = 360.0 - angle
+        }
+        // add 90° to adjust coordinate system
+        angle = angle + 90.0
+//        if angle > 360.0 {
+//            angle = angle - 360.0
+//        }
+        return CGFloat(angle)
+    }
+}
