@@ -13,5 +13,4 @@ jobs:
     - name: Checkout project
       uses: actions/checkout@v1
     - name: Build application
-      run: |
-        set -o pipefail && xcodebuild clean -scheme SCHEME−destination"platform=iOSSimulator,name=DEVICE"
+      run: set -o pipefail && xcodebuild clean -scheme SCHEME−destination"platform=iOSSimulator,name=DEVICE"
