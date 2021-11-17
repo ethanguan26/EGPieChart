@@ -1,6 +1,6 @@
 # EGPieChart
 
-[![CI Status](https://img.shields.io/travis/ethan/EGPieChart.svg?style=flat)](https://travis-ci.org/GuanyiLL/EGPieChart)
+[![CI Status](https://img.shields.io/travis/ethan/EGPieChart.svg?style=flat)](https://travis-ci.com/GuanyiLL/EGPieChart)
 [![Version](https://img.shields.io/cocoapods/v/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
 [![License](https://img.shields.io/cocoapods/l/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
 [![Platform](https://img.shields.io/cocoapods/p/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
