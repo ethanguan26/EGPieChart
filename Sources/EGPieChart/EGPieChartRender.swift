@@ -5,8 +5,6 @@
 //  Copyright (c) 2021 Ethan Guan
 //  https://github.com/GuanyiLL/EGPieChart
 
-import Foundation
-import UIKit
 import CoreGraphics
 
 open class EGPieChartRender {

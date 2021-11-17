@@ -5,10 +5,6 @@
 //  Copyright (c) 2021 Ethan Guan
 //  https://github.com/GuanyiLL/EGPieChart
 
-import Foundation
-import UIKit
-import SwiftUI
-
 public enum EGChartPart {
     case inside
     case outside

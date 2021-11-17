@@ -5,8 +5,6 @@
 //  Copyright (c) 2021 Ethan Guan
 //  https://github.com/GuanyiLL/EGPieChart
 
-import UIKit
-
 open class EGPieChartView : UIView {
     
     open var dataSource: EGPieChartDataSource? {
