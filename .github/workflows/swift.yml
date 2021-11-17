@@ -5,14 +5,13 @@ on: [push, pull_request]
 jobs:
   build:
     name: Build
+    env:
+      SCHEME: "EGPieChart"
+      DEVICE: "iPhone 12"
     runs-on: macOS-latest
-
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v1
-
-      - name: Select Xcode 12
-        run: sudo xcode-select --switch /Applications/Xcode_12.app
-  
-      - name: Build
-        run: swift build -v
+    - name: Checkout project
+      uses: actions/checkout@v1
+    - name: Build application
+      run: |
+        set -o pipefail && xcodebuild clean -scheme SCHEME−destination"platform=iOSSimulator,name=DEVICE"
