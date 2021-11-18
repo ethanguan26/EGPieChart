@@ -1,5 +1,5 @@
 # EGPieChart
-
+[![Workflow](https://github.com/GuanyiLL/EGPieChart/actions/workflows/swift.yml/badge.svg)
 [![Version](https://img.shields.io/cocoapods/v/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
 [![Releases](https://img.shields.io/github/release/GuanyiLL/EGPieChart.svg)](https://github.com/GuanyiLL/EGPieChart/releases)
 [![License](https://img.shields.io/cocoapods/l/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
