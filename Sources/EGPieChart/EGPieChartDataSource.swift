@@ -18,10 +18,10 @@ open class EGPieChartDataSource : ExpressibleByArrayLiteral {
     open var datas: [EGPieChartData]
     
     /// Perentage of single every single slice
-    open var persents: [Double]
+    open var persents: [CGFloat]
     
     /// All data sum
-    open var totalValue: Double = 0.0
+    open var totalValue: CGFloat = 0.0
     
     /// Fill color of every single slice
     open var fillColors = [UIColor]()

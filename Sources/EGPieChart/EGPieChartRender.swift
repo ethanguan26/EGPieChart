@@ -22,11 +22,11 @@ open class EGPieChartRender {
         let rotation = chart.rotation
         let center = chart.renderCenter
     
-        var innerArcEndPoint = CGPoint(x: center.x +  innerRadius * Double(cos(rotation.toRadian)),
-                                       y: center.y +  innerRadius * Double(sin(rotation.toRadian)))
+        var innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(rotation.toRadian),
+                                       y: center.y +  innerRadius * sin(rotation.toRadian))
         
-        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * Double(cos(rotation.toRadian)),
-                                         y: center.y +  outerRadius * Double(sin(rotation.toRadian)))
+        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * cos(rotation.toRadian),
+                                         y: center.y +  outerRadius * sin(rotation.toRadian))
 
         var innerArcStartPoint = CGPoint.zero
         var outerArcEndPoint = CGPoint.zero
@@ -43,11 +43,11 @@ open class EGPieChartRender {
             let startAngle = (rotation + datas.drawAngles[i] - datas.sliceAngles[i]).toRadian
             let endAngle = (rotation + datas.drawAngles[i]).toRadian
 
-            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * Double(cos(endAngle)),
-                                       y: center.y +  outerRadius * Double(sin(endAngle)))
+            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * cos(endAngle),
+                                       y: center.y +  outerRadius * sin(endAngle))
 
-            innerArcStartPoint = CGPoint(x: center.x + innerRadius * Double(cos(endAngle)),
-                                         y: center.y + innerRadius * Double(sin(endAngle)))
+            innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(endAngle),
+                                         y: center.y + innerRadius * sin(endAngle))
             
             context.move(to: innerArcEndPoint)
             context.addLine(to: outerArcStartPoint)
@@ -98,8 +98,8 @@ open class EGPieChartRender {
             }
             
             let targetAngle = chart.rotation + datas.drawAngles[i] - sweepAngle
-            let targetX = center.x + r * Double(cos(targetAngle.toRadian))
-            let targetY = center.y + r * Double(sin(targetAngle.toRadian))
+            let targetX = center.x + r * cos(targetAngle.toRadian)
+            let targetY = center.y + r * sin(targetAngle.toRadian)
             let p = CGPoint(x: targetX, y: targetY)
             
             valueText.draw(
@@ -131,13 +131,13 @@ open class EGPieChartRender {
             var line2Length = chart.line2Length
             
             let targetAngle = (chart.rotation + datas.drawAngles[i] - sweepAngle).toRadian
-            var targetX = center.x + r * Double(cos(targetAngle))
-            var targetY = center.y + r * Double(sin(targetAngle))
+            var targetX = center.x + r * cos(targetAngle)
+            var targetY = center.y + r * sin(targetAngle)
             let line1StartPoint = CGPoint(x: targetX, y: targetY)
             
             r += line1Length
-            targetX = center.x + r * Double(cos(targetAngle))
-            targetY = center.y + r * Double(sin(targetAngle))
+            targetX = center.x + r * cos(targetAngle)
+            targetY = center.y + r * sin(targetAngle)
             let line1EndPoint = CGPoint(x: targetX, y: targetY)
         
             var line2EndPoint = CGPoint.zero
