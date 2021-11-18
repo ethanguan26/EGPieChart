@@ -1,6 +1,7 @@
 # EGPieChart
 
 [![Version](https://img.shields.io/cocoapods/v/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
+[![Releases](https://img.shields.io/github/release/GuanyiLL/EGPieChart.svg)](https://github.com/GuanyiLL/EGPieChart/releases)
 [![License](https://img.shields.io/cocoapods/l/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
 [![Platform](https://img.shields.io/cocoapods/p/EGPieChart.svg?style=flat)](https://cocoapods.org/pods/EGPieChart)
 
