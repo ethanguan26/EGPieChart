@@ -49,7 +49,7 @@ open class EGPieChartDataSource : ExpressibleByArrayLiteral {
         drawAngles = [CGFloat]()
         sliceAngles = [CGFloat]()
     
-        var angle = 0.0
+        var angle: CGFloat = 0.0
         for i in 0..<persents.count {
             angle += persents[i] * 360.0
             sliceAngles.append(persents[i] * 360.0)
