@@ -9,9 +9,34 @@ import CoreGraphics
 
 open class EGPieChartRender {
     open weak var chartView: EGPieChartView?
+    let animator: EGAnimator
     
-    public init(_ chart: EGPieChartView) {
-        chartView = chart
+    var animationDisplayLink: CADisplayLink?
+    var animationDuration: TimeInterval = 2.0
+    var animationProgress: CGFloat = 0.0
+    var animationStartTime: TimeInterval = 0.0
+    @objc func animationLink() {
+        if chartView?.window == nil { return }
+        animationProgress = max(0.0, (CACurrentMediaTime() - animationStartTime)/animationDuration)
+        chartView?.setNeedsDisplay()
+        if (animationProgress > 1) {
+            animationDisplayLink?.remove(from: RunLoop.main, forMode: .common)
+            animationProgress = 1;
+            animationDisplayLink = nil;
+        }
+    }
+    
+    public init(_ chart: EGPieChartView, _ animator: EGAnimator) {
+        self.chartView = chart
+        self.animator = animator
+    }
+    
+    open func startAnimation() {
+        if animationDisplayLink == nil {
+            animationStartTime = CACurrentMediaTime()
+            animationDisplayLink = CADisplayLink(target: self, selector: #selector(animationLink))
+            animationDisplayLink?.add(to: .main, forMode: RunLoop.Mode.common)
+        }
     }
     
     open func drawSlices(_ context: CGContext) {
@@ -25,32 +50,32 @@ open class EGPieChartRender {
         var innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(rotation.toRadian),
                                        y: center.y +  innerRadius * sin(rotation.toRadian))
         
-        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * cos(rotation.toRadian),
-                                         y: center.y +  outerRadius * sin(rotation.toRadian))
+//        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * cos(rotation.toRadian),
+//                                         y: center.y +  outerRadius * sin(rotation.toRadian))
 
         var innerArcStartPoint = CGPoint.zero
-        var outerArcEndPoint = CGPoint.zero
+//        var outerArcEndPoint = CGPoint.zero
         
         context.saveGState()
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
             defer {
-                outerArcStartPoint = outerArcEndPoint
+//                outerArcStartPoint = outerArcEndPoint
                 innerArcEndPoint =  innerArcStartPoint
             }
             
-            let startAngle = (rotation + datas.drawAngles[i] - datas.sliceAngles[i]).toRadian
-            let endAngle = (rotation + datas.drawAngles[i]).toRadian
+            let startAngle = ((rotation + datas.drawAngles[i] - datas.sliceAngles[i]).toRadian) * animationProgress
+            let endAngle = ((rotation + datas.drawAngles[i]).toRadian) * animationProgress
 
-            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * cos(endAngle),
-                                       y: center.y +  outerRadius * sin(endAngle))
+//            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * cos(endAngle),
+//                                       y: center.y +  outerRadius * sin(endAngle))
 
             innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(endAngle),
                                          y: center.y + innerRadius * sin(endAngle))
             
             context.move(to: innerArcEndPoint)
-            context.addLine(to: outerArcStartPoint)
+//            context.addLine(to: outerArcStartPoint)
             
             // In a flipped coordinate system (the default for UIView drawing methods in iOS), specifying a clockwise arc results in a counterclockwise arc after the transformation is applied.
             // https://developer.apple.com/documentation/coregraphics/cgcontext/2427129-addarc

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9379DAAD27462E31008AA11A /* EGAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9379DAAC27462E31008AA11A /* EGAnimator.swift */; };
 		93D2136A2740DE0300CC62D0 /* EGPieChart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93D213612740DE0300CC62D0 /* EGPieChart.framework */; };
 		93D213702740DE0300CC62D0 /* EGPieChart.h in Headers */ = {isa = PBXBuildFile; fileRef = 93D213642740DE0300CC62D0 /* EGPieChart.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		93D2137E2740DE1D00CC62D0 /* EGPieChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2137A2740DE1D00CC62D0 /* EGPieChartData.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9379DAAC27462E31008AA11A /* EGAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EGAnimator.swift; sourceTree = "<group>"; };
 		93D213612740DE0300CC62D0 /* EGPieChart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EGPieChart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		93D213642740DE0300CC62D0 /* EGPieChart.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EGPieChart.h; sourceTree = "<group>"; };
 		93D213692740DE0300CC62D0 /* EGPieChartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EGPieChartTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +89,7 @@
 				93D2137B2740DE1D00CC62D0 /* EGPieChartDataSource.swift */,
 				93D2137C2740DE1D00CC62D0 /* EGPieChartView.swift */,
 				93D2137D2740DE1D00CC62D0 /* EGPieChartRender.swift */,
+				9379DAAC27462E31008AA11A /* EGAnimator.swift */,
 			);
 			path = EGPieChart;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 			files = (
 				93D2137F2740DE1D00CC62D0 /* EGPieChartDataSource.swift in Sources */,
 				93D213812740DE1D00CC62D0 /* EGPieChartRender.swift in Sources */,
+				9379DAAD27462E31008AA11A /* EGAnimator.swift in Sources */,
 				93D2137E2740DE1D00CC62D0 /* EGPieChartData.swift in Sources */,
 				93D213802740DE1D00CC62D0 /* EGPieChartView.swift in Sources */,
 			);

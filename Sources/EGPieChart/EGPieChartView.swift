@@ -9,6 +9,7 @@ open class EGPieChartView : UIView {
     
     open var dataSource: EGPieChartDataSource? {
         didSet {
+            self.render?.startAnimation()
             setNeedsDisplay()
         }
     }
@@ -65,7 +66,7 @@ open class EGPieChartView : UIView {
     /// Previous point
     private var _prePoint = CGPoint.zero
     
-    // deceleration
+    // MARK: Deceleration vairiables
     private var _preTime: TimeInterval = 0.0
     private var _angularVelocity: CGFloat = 0.0
     private var _decelerationDisplayLink: CADisplayLink!
@@ -75,6 +76,18 @@ open class EGPieChartView : UIView {
         var offset: CGFloat
     }
     private var _angularVelocityStorage = [EGAngularVelocity]()
+    
+    // MARK: Animation
+    /// The animator responsible for animating chart values.
+    open internal(set) lazy var animator: EGAnimator = {
+        let animator = EGAnimator()
+//        animator.delegate = self
+        return animator
+    }()
+    
+    open func animate(_ duration:TimeInterval) {
+        
+    }
     
     // MARK: Touch event
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -229,7 +242,7 @@ open class EGPieChartView : UIView {
     }
     
     func config() {
-        render = EGPieChartRender(self)
+        render = EGPieChartRender(self, animator)
         backgroundColor = .clear
     }
     
