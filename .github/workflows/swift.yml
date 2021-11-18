@@ -4,12 +4,21 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build
     runs-on: macOS-latest
     strategy:
       matrix:
         destination: ["OS=14.4,name=iPhone 12 Pro"]
     steps:
       - uses: actions/checkout@v2
-      - name: iOS - ${{ matrix.destination }}
+      - name: Build Framework
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "EGPieChart.xcworkspace" -scheme "EGPieChart" -destination "${{ matrix.destination }}"
+
+  demo:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        destination: ["OS=14.4,name=iPhone 12 Pro"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Demo
+        run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -workspace "EGPieChart.xcworkspace" -scheme "EGPieChartDemo" -destination "${{ matrix.destination }}" 
