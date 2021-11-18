@@ -6,7 +6,7 @@
 //  https://github.com/GuanyiLL/EGPieChart
 
 open class EGPieChartData {
-    open var value: Double
+    open var value: CGFloat
     
     /// Content displayed on slice
     open var content: String?

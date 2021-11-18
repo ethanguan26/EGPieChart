@@ -20,8 +20,8 @@ open class EGPieChartView : UIView {
         }
     }
     
-    private var _outerRadius: Double = 0.0
-    open var outerRadius: Double {
+    private var _outerRadius: CGFloat = 0.0
+    open var outerRadius: CGFloat {
         get {
             return _outerRadius == 0.0 ? min(bounds.width, bounds.height) / 2 : _outerRadius
         }
@@ -30,7 +30,7 @@ open class EGPieChartView : UIView {
         }
     }
     
-    open var innerRadius: Double = 0.0
+    open var innerRadius: CGFloat = 0.0
     
     /// Center of  pie chart
     lazy var renderCenter: CGPoint = {
@@ -53,14 +53,14 @@ open class EGPieChartView : UIView {
     private var render: EGPieChartRender?
     
     /// Value inside position 
-    @EGLimited(min:0, max:1) open var valueOffsetX: Double = 0.5
-    @EGLimited(min:0, max:1) open var valueOffsetY: Double = 0.5
+    @EGLimited(min:0, max:1) open var valueOffsetX: CGFloat = 0.5
+    @EGLimited(min:0, max:1) open var valueOffsetY: CGFloat = 0.5
     
     /// Line&OutsideValue position control
-    open var line1Persentage: Double = 0.9
-    open var line1Lenght: Double = 20.0
-    @EGLimited(min:0, max:1) open var line1AnglarOffset: Double = 0.5
-    open var line2Length: Double = 20.0
+    open var line1Persentage: CGFloat = 0.9
+    open var line1Lenght: CGFloat = 20.0
+    @EGLimited(min:0, max:1) open var line1AnglarOffset: CGFloat = 0.5
+    open var line2Length: CGFloat = 20.0
 
     /// Previous point
     private var _prePoint = CGPoint.zero
