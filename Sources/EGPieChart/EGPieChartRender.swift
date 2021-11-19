@@ -214,9 +214,6 @@ open class EGPieChartRender {
         }
         // add 90° to adjust coordinate system
         angle = angle + 90.0
-//        if angle > 360.0 {
-//            angle = angle - 360.0
-//        }
         return CGFloat(angle)
     }
 }
