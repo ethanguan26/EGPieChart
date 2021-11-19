@@ -20,7 +20,7 @@ class EGPieChartDemoController: UIViewController {
         pieChartView.line1Persentage = 0.95
         pieChartView.line1Lenght = 20
         pieChartView.line2Length = 15
-        
+        pieChartView.rotation = 270
         requestDatas()
     }
     

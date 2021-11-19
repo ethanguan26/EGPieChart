@@ -54,7 +54,7 @@ open class EGPieChartRender {
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
-            let startAngle = (rotation + (datas.drawAngles[i] - datas.sliceAngles[i])).toRadian * animationProgress
+            let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animationProgress
 //            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
             let sweepAngle = datas.sliceAngles[i].toRadian
 
