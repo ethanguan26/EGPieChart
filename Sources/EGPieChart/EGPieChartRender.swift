@@ -43,12 +43,8 @@ open class EGPieChartRender {
         guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
         let outerRadius = chart.outerRadius
         let innerRadius = chart.innerRadius
-        
         let rotation = chart.rotation
         let center = chart.renderCenter
-    
-        var innerArcEndPoint = CGPoint.zero
-        var innerArcStartPoint = CGPoint.zero
 
         context.saveGState()
         defer { context.restoreGState() }
@@ -58,10 +54,10 @@ open class EGPieChartRender {
 //            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
             let sweepAngle = datas.sliceAngles[i].toRadian
 
-            innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(startAngle + sweepAngle),
+            let innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(startAngle + sweepAngle),
                                          y: center.y + innerRadius * sin(startAngle + sweepAngle))
             
-            innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(startAngle),
+            let innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(startAngle),
                                        y: center.y +  innerRadius * sin(startAngle))
             
             context.move(to: innerArcEndPoint)
