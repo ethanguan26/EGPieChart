@@ -26,7 +26,7 @@ class EGPieChartDemoController: UIViewController {
     
     func requestDatas() {
         DispatchQueue.global().async {
-            Thread.sleep(forTimeInterval: 1.5)
+            Thread.sleep(forTimeInterval: 0)
             DispatchQueue.main.async {
                 let testDataArr: [CGFloat] = [55.2, 190.4, 85.3, 100.5, 150.72]
                 var datas = [EGPieChartData]()
