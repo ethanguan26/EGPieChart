@@ -17,7 +17,7 @@ open class EGPieChartRender {
     var animationStartTime: TimeInterval = 0.0
     @objc func animationLink() {
         if chartView?.window == nil { return }
-        animationProgress = (CACurrentMediaTime() - animationStartTime)/animationDuration
+        animationProgress = CGFloat((CACurrentMediaTime() - animationStartTime)/animationDuration)
         chartView?.setNeedsDisplay()
         if (animationProgress > 1) {
             animationDisplayLink?.remove(from: RunLoop.main, forMode: .common)
