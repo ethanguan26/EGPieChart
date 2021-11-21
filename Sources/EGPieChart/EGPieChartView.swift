@@ -5,11 +5,10 @@
 //  Copyright (c) 2021 Ethan Guan
 //  https://github.com/GuanyiLL/EGPieChart
 
-open class EGPieChartView : UIView {
+open class EGPieChartView : UIView, EGAnimatorDelegate {
     
     open var dataSource: EGPieChartDataSource? {
         didSet {
-            self.render?.startAnimation()
             setNeedsDisplay()
         }
     }
@@ -81,11 +80,19 @@ open class EGPieChartView : UIView {
     /// The animator responsible for animating chart values.
     open internal(set) lazy var animator: EGAnimator = {
         let animator = EGAnimator()
-//        animator.delegate = self
+        animator.delegate = self
         return animator
     }()
     
     open func animate(_ duration:TimeInterval) {
+        render?.animator.startAnimation()
+    }
+    
+    public func animatorUpdated(_ animator: EGAnimator) {
+        setNeedsDisplay()
+    }
+    
+    public func animatorStopped(_ animator: EGAnimator) {
         
     }
     

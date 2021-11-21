@@ -11,32 +11,9 @@ open class EGPieChartRender {
     open weak var chartView: EGPieChartView?
     let animator: EGAnimator
     
-    var animationDisplayLink: CADisplayLink?
-    var animationDuration: TimeInterval = 1.5
-    var animationProgress: CGFloat = 0.0
-    var animationStartTime: TimeInterval = 0.0
-    @objc func animationLink() {
-        if chartView?.window == nil { return }
-        animationProgress = CGFloat((CACurrentMediaTime() - animationStartTime)/animationDuration)
-        chartView?.setNeedsDisplay()
-        if (animationProgress > 1) {
-            animationDisplayLink?.remove(from: RunLoop.main, forMode: .common)
-            animationProgress = 1;
-            animationDisplayLink = nil;
-        }
-    }
-    
     public init(_ chart: EGPieChartView, _ animator: EGAnimator) {
         self.chartView = chart
         self.animator = animator
-    }
-    
-    open func startAnimation() {
-        if animationDisplayLink == nil {
-            animationStartTime = CACurrentMediaTime()
-            animationDisplayLink = CADisplayLink(target: self, selector: #selector(animationLink))
-            animationDisplayLink?.add(to: .main, forMode: RunLoop.Mode.common)
-        }
     }
     
     open func drawSlices(_ context: CGContext) {
@@ -50,7 +27,7 @@ open class EGPieChartRender {
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
-            let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animationProgress
+            let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animator.animationProgress
 //            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
             let sweepAngle = datas.sliceAngles[i].toRadian
 

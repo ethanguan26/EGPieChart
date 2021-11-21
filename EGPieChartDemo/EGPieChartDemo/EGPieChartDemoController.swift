@@ -49,6 +49,7 @@ class EGPieChartDemoController: UIViewController {
                 dataSource.centerAttributeString = attr.copy() as? NSAttributedString
                 self.pieChartView.drawCenter = true
                 self.pieChartView.dataSource = dataSource
+                self.pieChartView.animate(3.5)
             }
         }
     }
