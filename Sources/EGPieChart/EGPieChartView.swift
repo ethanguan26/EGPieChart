@@ -5,7 +5,8 @@
 //  Copyright (c) 2021 Ethan Guan
 //  https://github.com/GuanyiLL/EGPieChart
 
-open class EGPieChartView : UIView {
+open class EGPieChartView : UIView, EGAnimatorDelegate {
+    open var delegate: EGPieChartDelegate?
     
     open var dataSource: EGPieChartDataSource? {
         didSet {
@@ -65,7 +66,7 @@ open class EGPieChartView : UIView {
     /// Previous point
     private var _prePoint = CGPoint.zero
     
-    // deceleration
+    // MARK: Deceleration vairiables
     private var _preTime: TimeInterval = 0.0
     private var _angularVelocity: CGFloat = 0.0
     private var _decelerationDisplayLink: CADisplayLink!
@@ -75,6 +76,30 @@ open class EGPieChartView : UIView {
         var offset: CGFloat
     }
     private var _angularVelocityStorage = [EGAngularVelocity]()
+    
+    // MARK: Animation
+    /// The animator responsible for animating chart values.
+    open internal(set) lazy var animator: EGAnimator = {
+        let animator = EGAnimator()
+        animator.delegate = self
+        return animator
+    }()
+    
+    open func animate(_ duration:TimeInterval) {
+        render?.animator.animate(duration: duration)
+    }
+    
+    public func animatorBegan(_ animator: EGAnimator) {
+        delegate?.animationDidStart()
+    }
+    
+    public func animatorUpdated(_ animator: EGAnimator) {
+        setNeedsDisplay()
+    }
+    
+    public func animatorStopped(_ animator: EGAnimator) {
+        delegate?.animationDidStop()
+    }
     
     // MARK: Touch event
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -229,7 +254,7 @@ open class EGPieChartView : UIView {
     }
     
     func config() {
-        render = EGPieChartRender(self)
+        render = EGPieChartRender(self, animator)
         backgroundColor = .clear
     }
     
@@ -246,6 +271,14 @@ extension FloatingPoint {
     var toDegree: Self {
         return self * 180 / .pi
     }
+}
+
+public protocol EGPieChartDelegate: AnyObject {
+    /// Called when the animation begins its active duration.
+    func animationDidStart()
+    
+    /// Called when the animation either completes its active duration
+    func animationDidStop()
 }
 
 @propertyWrapper

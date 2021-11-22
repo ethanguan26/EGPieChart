@@ -9,60 +9,47 @@ import CoreGraphics
 
 open class EGPieChartRender {
     open weak var chartView: EGPieChartView?
+    let animator: EGAnimator
     
-    public init(_ chart: EGPieChartView) {
-        chartView = chart
+    public init(_ chart: EGPieChartView, _ animator: EGAnimator) {
+        self.chartView = chart
+        self.animator = animator
     }
     
     open func drawSlices(_ context: CGContext) {
         guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
         let outerRadius = chart.outerRadius
         let innerRadius = chart.innerRadius
-        
         let rotation = chart.rotation
         let center = chart.renderCenter
-    
-        var innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(rotation.toRadian),
-                                       y: center.y +  innerRadius * sin(rotation.toRadian))
-        
-        var outerArcStartPoint = CGPoint(x: center.x +  outerRadius * cos(rotation.toRadian),
-                                         y: center.y +  outerRadius * sin(rotation.toRadian))
 
-        var innerArcStartPoint = CGPoint.zero
-        var outerArcEndPoint = CGPoint.zero
-        
         context.saveGState()
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
-            defer {
-                outerArcStartPoint = outerArcEndPoint
-                innerArcEndPoint =  innerArcStartPoint
-            }
+            let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animator.animationProgress
+//            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
+            let sweepAngle = datas.sliceAngles[i].toRadian
+
+            let innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(startAngle + sweepAngle),
+                                         y: center.y + innerRadius * sin(startAngle + sweepAngle))
             
-            let startAngle = (rotation + datas.drawAngles[i] - datas.sliceAngles[i]).toRadian
-            let endAngle = (rotation + datas.drawAngles[i]).toRadian
-
-            outerArcEndPoint = CGPoint(x: center.x +  outerRadius * cos(endAngle),
-                                       y: center.y +  outerRadius * sin(endAngle))
-
-            innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(endAngle),
-                                         y: center.y + innerRadius * sin(endAngle))
+            let innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(startAngle),
+                                       y: center.y +  innerRadius * sin(startAngle))
             
             context.move(to: innerArcEndPoint)
-            context.addLine(to: outerArcStartPoint)
             
             // In a flipped coordinate system (the default for UIView drawing methods in iOS), specifying a clockwise arc results in a counterclockwise arc after the transformation is applied.
             // https://developer.apple.com/documentation/coregraphics/cgcontext/2427129-addarc
             context.addArc(center: center,
                            radius: outerRadius,
                            startAngle: startAngle,
-                           endAngle: endAngle,
+                           endAngle: startAngle + sweepAngle,
                            clockwise: false)
             context.addLine(to: innerArcStartPoint)
             context.addArc(center: center,
                            radius: innerRadius,
-                           startAngle: endAngle,
+                           startAngle: startAngle + sweepAngle,
                            endAngle: startAngle,
                            clockwise: true)
 //            context.closePath()   // It seems not necessary
@@ -97,7 +84,7 @@ open class EGPieChartRender {
                 r = outerRadius * chart.valueOffsetY
             }
             
-            let targetAngle = chart.rotation + datas.drawAngles[i] - sweepAngle
+            let targetAngle = chart.rotation + (datas.drawAngles[i] - sweepAngle) * animator.animationProgress
             let targetX = center.x + r * cos(targetAngle.toRadian)
             let targetY = center.y + r * sin(targetAngle.toRadian)
             let p = CGPoint(x: targetX, y: targetY)
@@ -130,7 +117,7 @@ open class EGPieChartRender {
             let line1Length = chart.line1Lenght
             var line2Length = chart.line2Length
             
-            let targetAngle = (chart.rotation + datas.drawAngles[i] - sweepAngle).toRadian
+            let targetAngle = (chart.rotation + (datas.drawAngles[i] - sweepAngle) * animator.animationProgress).toRadian
             var targetX = center.x + r * cos(targetAngle)
             var targetY = center.y + r * sin(targetAngle)
             let line1StartPoint = CGPoint(x: targetX, y: targetY)
@@ -153,7 +140,7 @@ open class EGPieChartRender {
                 if (line1EndPoint.x + line2Length + size.width > chart.bounds.width) {
                     line2Length = max(0, chart.frame.width - size.width - line1EndPoint.x)
                 }
-                line2EndPoint = CGPoint(x: line1EndPoint.x + line2Length, y: line1EndPoint.y);
+                line2EndPoint = CGPoint(x: line1EndPoint.x + line2Length, y: line1EndPoint.y)
                 textPosition = CGPoint(x: line2EndPoint.x , y: line2EndPoint.y - size.height / 2)
             }
             context.move(to: line1StartPoint)
@@ -199,10 +186,8 @@ open class EGPieChartRender {
             angle = 360.0 - angle
         }
         // add 90° to adjust coordinate system
+        
         angle = angle + 90.0
-//        if angle > 360.0 {
-//            angle = angle - 360.0
-//        }
         return CGFloat(angle)
     }
 }

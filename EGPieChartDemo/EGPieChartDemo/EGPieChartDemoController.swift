@@ -8,7 +8,15 @@
 import UIKit
 import EGPieChart
 
-class EGPieChartDemoController: UIViewController {
+class EGPieChartDemoController: UIViewController, EGPieChartDelegate {
+    func animationDidStart() {
+        print(#function)
+    }
+    
+    func animationDidStop() {
+        print(#function)
+    }
+    
     
     @IBOutlet weak var pieChartView: EGPieChartView!
     override func viewDidLoad() {
@@ -20,13 +28,18 @@ class EGPieChartDemoController: UIViewController {
         pieChartView.line1Persentage = 0.95
         pieChartView.line1Lenght = 20
         pieChartView.line2Length = 15
-        
+        pieChartView.rotation = 270
+        pieChartView.delegate = self
         requestDatas()
+    }
+    
+    @IBAction func animationAction(_ sender: UIButton) {
+        self.pieChartView.animate(1.5)
     }
     
     func requestDatas() {
         DispatchQueue.global().async {
-            Thread.sleep(forTimeInterval: 1.5)
+            Thread.sleep(forTimeInterval: 0)
             DispatchQueue.main.async {
                 let testDataArr: [CGFloat] = [55.2, 190.4, 85.3, 100.5, 150.72]
                 var datas = [EGPieChartData]()
@@ -49,6 +62,7 @@ class EGPieChartDemoController: UIViewController {
                 dataSource.centerAttributeString = attr.copy() as? NSAttributedString
                 self.pieChartView.drawCenter = true
                 self.pieChartView.dataSource = dataSource
+                self.pieChartView.animate(1.5)
             }
         }
     }
@@ -59,15 +73,4 @@ class EGPieChartDemoController: UIViewController {
         pieChartView.outerRadius = view.frame.width / 2.0 - 50.0
         //        pieChartView.innerRadius = 70.0
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }
