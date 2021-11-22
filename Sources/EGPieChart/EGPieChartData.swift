@@ -20,6 +20,8 @@ open class EGPieChartData {
     open var outsideValueTextColor: UIColor = .black
     open var outsideValueFont: UIFont = UIFont.systemFont(ofSize: 11)
     
+    open var highLighted = false
+    
     public init(value: CGFloat, content: String) {
         self.value = value
         self.content = content

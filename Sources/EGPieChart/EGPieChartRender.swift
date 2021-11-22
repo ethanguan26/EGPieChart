@@ -27,6 +27,7 @@ open class EGPieChartRender {
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
+            if datas[i].highLighted { continue }
             let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animator.animationProgress
 //            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
             let sweepAngle = datas.sliceAngles[i].toRadian
@@ -57,7 +58,59 @@ open class EGPieChartRender {
             context.setStrokeColor(datas.fillColors[i].cgColor)
             context.setFillColor(datas.fillColors[i].cgColor)
             
-            context.setLineWidth(1 / UIScreen.main.scale)
+//            context.setLineWidth(1 / UIScreen.main.scale)
+            context.drawPath(using: .fillStroke)
+        }
+    }
+    
+    open func drawHighLighted(_ context: CGContext) {
+        guard let chart = chartView, let datas = chart.dataSource, datas.count > 0 else { return }
+        let outerRadius = chart.outerRadius + 10
+        let innerRadius = chart.innerRadius + 10
+        let rotation = chart.rotation
+        let center = chart.renderCenter
+
+        context.saveGState()
+        defer { context.restoreGState() }
+        
+        for i in 0..<datas.count {
+            if !datas[i].highLighted { continue }
+            let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animator.animationProgress
+//            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
+            let sweepAngle = datas.sliceAngles[i].toRadian
+            
+            let distance = 10.0
+            
+            let realCenter = CGPoint(x: center.x + distance * cos(startAngle + sweepAngle / 2),
+                                     y: center.y + distance * sin(startAngle + sweepAngle / 2))
+            
+            let innerArcStartPoint = CGPoint(x: realCenter.x + innerRadius * cos(startAngle + sweepAngle),
+                                             y: realCenter.y + innerRadius * sin(startAngle + sweepAngle))
+            
+            let innerArcEndPoint = CGPoint(x: realCenter.x + innerRadius * cos(startAngle),
+                                           y: realCenter.y + innerRadius * sin(startAngle))
+            
+            context.move(to: innerArcEndPoint)
+            
+            // In a flipped coordinate system (the default for UIView drawing methods in iOS), specifying a clockwise arc results in a counterclockwise arc after the transformation is applied.
+            // https://developer.apple.com/documentation/coregraphics/cgcontext/2427129-addarc
+            context.addArc(center: realCenter,
+                           radius: outerRadius,
+                           startAngle: startAngle,
+                           endAngle: startAngle + sweepAngle,
+                           clockwise: false)
+            
+            context.addLine(to: innerArcStartPoint)
+            
+            context.addArc(center: realCenter,
+                           radius: innerRadius,
+                           startAngle: startAngle + sweepAngle,
+                           endAngle: startAngle,
+                           clockwise: true)
+//            context.closePath()   // It seems not necessary
+            
+            context.setStrokeColor(datas.fillColors[i].cgColor)
+            context.setFillColor(datas.fillColors[i].cgColor)
             context.drawPath(using: .fillStroke)
         }
     }
