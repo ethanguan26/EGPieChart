@@ -57,13 +57,24 @@
                                     <constraint firstAttribute="width" secondItem="fl3-1R-xmI" secondAttribute="height" multiplier="1:1" id="vTI-eI-IA2"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sig-Wp-KEs">
+                                <rect key="frame" x="0.0" y="226" width="66" height="34"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Animate"/>
+                                <connections>
+                                    <action selector="animationAction:" destination="h99-f0-6Bt" eventType="touchUpInside" id="fhR-US-OgT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Mer-5G-TiG"/>
                         <color key="backgroundColor" systemColor="systemPinkColor"/>
                         <constraints>
                             <constraint firstItem="Mer-5G-TiG" firstAttribute="trailing" secondItem="fl3-1R-xmI" secondAttribute="trailing" id="EAA-y5-Cew"/>
+                            <constraint firstItem="Mer-5G-TiG" firstAttribute="leading" secondItem="sig-Wp-KEs" secondAttribute="leading" id="FGA-9w-MNJ"/>
                             <constraint firstItem="fl3-1R-xmI" firstAttribute="centerY" secondItem="Mer-5G-TiG" secondAttribute="centerY" id="TlV-eR-zfb"/>
                             <constraint firstItem="fl3-1R-xmI" firstAttribute="leading" secondItem="Mer-5G-TiG" secondAttribute="leading" id="aVX-hh-b9r"/>
+                            <constraint firstItem="fl3-1R-xmI" firstAttribute="top" secondItem="sig-Wp-KEs" secondAttribute="bottom" constant="8" symbolic="YES" id="ctv-f2-pob"/>
+                            <constraint firstItem="Mer-5G-TiG" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="sig-Wp-KEs" secondAttribute="trailing" symbolic="YES" id="eqn-sE-nbu"/>
                             <constraint firstItem="fl3-1R-xmI" firstAttribute="centerX" secondItem="Mer-5G-TiG" secondAttribute="centerX" id="zBI-js-Oay"/>
                         </constraints>
                     </view>

@@ -6,6 +6,7 @@
 //  https://github.com/GuanyiLL/EGPieChart
 
 open class EGPieChartView : UIView, EGAnimatorDelegate {
+    open var delegate: EGPieChartDelegate?
     
     open var dataSource: EGPieChartDataSource? {
         didSet {
@@ -85,7 +86,11 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
     }()
     
     open func animate(_ duration:TimeInterval) {
-        render?.animator.startAnimation()
+        render?.animator.animate(duration: duration)
+    }
+    
+    public func animatorBegan(_ animator: EGAnimator) {
+        delegate?.animationDidStart()
     }
     
     public func animatorUpdated(_ animator: EGAnimator) {
@@ -93,7 +98,7 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
     }
     
     public func animatorStopped(_ animator: EGAnimator) {
-        
+        delegate?.animationDidStop()
     }
     
     // MARK: Touch event
@@ -266,6 +271,14 @@ extension FloatingPoint {
     var toDegree: Self {
         return self * 180 / .pi
     }
+}
+
+public protocol EGPieChartDelegate: AnyObject {
+    /// Called when the animation begins its active duration.
+    func animationDidStart()
+    
+    /// Called when the animation either completes its active duration
+    func animationDidStop()
 }
 
 @propertyWrapper

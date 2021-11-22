@@ -84,7 +84,7 @@ open class EGPieChartRender {
                 r = outerRadius * chart.valueOffsetY
             }
             
-            let targetAngle = chart.rotation + datas.drawAngles[i] - sweepAngle
+            let targetAngle = chart.rotation + (datas.drawAngles[i] - sweepAngle) * animator.animationProgress
             let targetX = center.x + r * cos(targetAngle.toRadian)
             let targetY = center.y + r * sin(targetAngle.toRadian)
             let p = CGPoint(x: targetX, y: targetY)
@@ -117,7 +117,7 @@ open class EGPieChartRender {
             let line1Length = chart.line1Lenght
             var line2Length = chart.line2Length
             
-            let targetAngle = (chart.rotation + datas.drawAngles[i] - sweepAngle).toRadian
+            let targetAngle = (chart.rotation + (datas.drawAngles[i] - sweepAngle) * animator.animationProgress).toRadian
             var targetX = center.x + r * cos(targetAngle)
             var targetY = center.y + r * sin(targetAngle)
             let line1StartPoint = CGPoint(x: targetX, y: targetY)
@@ -140,7 +140,7 @@ open class EGPieChartRender {
                 if (line1EndPoint.x + line2Length + size.width > chart.bounds.width) {
                     line2Length = max(0, chart.frame.width - size.width - line1EndPoint.x)
                 }
-                line2EndPoint = CGPoint(x: line1EndPoint.x + line2Length, y: line1EndPoint.y);
+                line2EndPoint = CGPoint(x: line1EndPoint.x + line2Length, y: line1EndPoint.y)
                 textPosition = CGPoint(x: line2EndPoint.x , y: line2EndPoint.y - size.height / 2)
             }
             context.move(to: line1StartPoint)
