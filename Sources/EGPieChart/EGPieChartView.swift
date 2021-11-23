@@ -269,7 +269,6 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
         let optionContext = UIGraphicsGetCurrentContext()
         guard let context = optionContext, let render = render else { return }
         render.drawSlices(context)
-        render.drawHighLighted(context)
         if drawValues {
             render.drawValues(context)
         }

@@ -42,6 +42,7 @@ class EGPieChartDemoController: UIViewController, EGPieChartDelegate {
             Thread.sleep(forTimeInterval: 0)
             DispatchQueue.main.async {
                 let testDataArr: [CGFloat] = [55.2, 190.4, 85.3, 100.5, 150.72]
+//                let testDataArr: [CGFloat] = [55.2]
                 var datas = [EGPieChartData]()
                 for i in 0..<testDataArr.count {
                     let data = EGPieChartData(value: testDataArr[i],
@@ -53,6 +54,7 @@ class EGPieChartDemoController: UIViewController, EGPieChartDelegate {
                 dataSource.setAllValueTextColor(UIColor.black)
                 
                 let colors: [UIColor] = [.red, .green, .orange, .cyan, .lightGray]
+//                let colors: [UIColor] = [.red]
                 dataSource.fillColors = colors
                 
                 let content = NSString(string: "I'm a Pie Chart")
