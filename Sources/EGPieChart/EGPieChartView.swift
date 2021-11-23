@@ -86,9 +86,10 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
     }()
     
     open func animate(_ duration:TimeInterval) {
-        render?.animator.animate(duration: duration)
+        render?.animator.animate(duration)
     }
     
+    // MARK: Animator delegate
     public func animatorBegan(_ animator: EGAnimator) {
         delegate?.animationDidStart()
     }
@@ -130,6 +131,52 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
             _decelerationDisplayLink = CADisplayLink(target: self, selector: #selector(decelerationLink))
             _decelerationDisplayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.common)
         }
+    }
+    
+    @objc func tapHandler(_ recognizer: UITapGestureRecognizer) {
+        if recognizer.state == .ended {
+            guard let render = render, let datas = dataSource, datas.count > 0 else { return }
+            let p = recognizer.location(in: self)
+            
+            let distance = distanceToCenter(p)
+            guard (innerRadius..<outerRadius).contains(distance) else { return }
+            
+            var angle = render.angleForPoint(p) - rotation
+            // pie chart rotates over 360 degree
+            angle = angle.truncatingRemainder(dividingBy: 360)
+            angle = (angle.sign == .minus) ? angle + 360 : angle
+            let idx = angleAtIndex(angle)
+            if datas[idx].isHighlighted {
+                datas.forEach { $0.isHighlighted = false }
+            } else {
+                datas.forEach { $0.isHighlighted = false }
+                datas[idx].isHighlighted = true
+            }
+            
+//            print(datas)
+            setNeedsDisplay()
+        }
+    }
+    
+    func angleAtIndex(_ angle: CGFloat) -> Int {
+        guard let datas = dataSource, datas.count > 0 else { return -1 }
+        for i in 0..<datas.count {
+            let left = datas.drawAngles[i] - datas.sliceAngles[i]
+            let right = datas.drawAngles[i]
+            let range = left..<right
+            if range.contains(angle) {
+                return i
+            }
+        }
+        return -1
+    }
+    
+    open func distanceToCenter(_ p: CGPoint) -> CGFloat {
+        let c = renderCenter
+        let x = p.x - c.x
+        let y = p.y - c.y
+        let dist = sqrt(x * x + y * y)
+        return dist
     }
     
     // MARK: Deceleration
@@ -256,6 +303,8 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
     func config() {
         render = EGPieChartRender(self, animator)
         backgroundColor = .clear
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler(_:)))
+        addGestureRecognizer(tap)
     }
     
     deinit {
@@ -274,10 +323,10 @@ extension FloatingPoint {
 }
 
 public protocol EGPieChartDelegate: AnyObject {
-    /// Called when the animation begins its active duration.
+    /// Called when the animation began
     func animationDidStart()
     
-    /// Called when the animation either completes its active duration
+    /// Called when the animation ended
     func animationDidStop()
 }
 

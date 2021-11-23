@@ -11,7 +11,10 @@ public enum EGChartPart {
     case all
 }
 
-open class EGPieChartDataSource : ExpressibleByArrayLiteral {
+open class EGPieChartDataSource
+: ExpressibleByArrayLiteral
+, CustomStringConvertible {
+    
     public typealias ArrayLiteralElement = EGPieChartData
 
     /// Pie chart datas
@@ -34,6 +37,15 @@ open class EGPieChartDataSource : ExpressibleByArrayLiteral {
     
     /// Center  content
     open var centerAttributeString: NSAttributedString?
+    
+    public var description: String {
+        return {
+            var des = ""
+            forEach { des += "value: \($0.value) content: \($0.content ?? "") highlighted: \($0.isHighlighted) \n"}
+            return des
+        }()
+    }
+    
     
     required convenience public init(arrayLiteral elements: EGPieChartData...) {
         self.init(datas: elements)
@@ -80,6 +92,8 @@ open class EGPieChartDataSource : ExpressibleByArrayLiteral {
             forEach { $0.valueTextColor = color; $0.outsideValueTextColor = color }
         }
     }
+    
+    
 }
 
 extension EGPieChartDataSource : MutableCollection {
