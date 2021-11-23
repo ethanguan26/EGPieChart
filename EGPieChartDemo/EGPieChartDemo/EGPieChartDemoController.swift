@@ -57,12 +57,12 @@ class EGPieChartDemoController: UIViewController, EGPieChartDelegate {
 //                let colors: [UIColor] = [.red]
                 dataSource.fillColors = colors
                 
-                let content = NSString(string: "I'm a Pie Chart")
-                let range = content.range(of: "Pie Chart")
-                let attr = NSMutableAttributedString(string: String(content))
-                attr.setAttributes([.foregroundColor: UIColor.blue, .font: UIFont.systemFont(ofSize: 14)], range: range)
-                dataSource.centerAttributeString = attr.copy() as? NSAttributedString
-                self.pieChartView.drawCenter = true
+//                let content = NSString(string: "I'm a Pie Chart")
+//                let range = content.range(of: "Pie Chart")
+//                let attr = NSMutableAttributedString(string: String(content))
+//                attr.setAttributes([.foregroundColor: UIColor.blue, .font: UIFont.systemFont(ofSize: 14)], range: range)
+//                dataSource.centerAttributeString = attr.copy() as? NSAttributedString
+//                self.pieChartView.drawCenter = true
                 self.pieChartView.dataSource = dataSource
                 self.pieChartView.animate(1.5)
             }

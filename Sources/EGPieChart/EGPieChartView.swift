@@ -86,7 +86,7 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
     }()
     
     open func animate(_ duration:TimeInterval) {
-        render?.animator.animate(duration: duration)
+        render?.animator.animate(duration)
     }
     
     // MARK: Animator delegate
@@ -146,11 +146,11 @@ open class EGPieChartView : UIView, EGAnimatorDelegate {
             angle = angle.truncatingRemainder(dividingBy: 360)
             angle = (angle.sign == .minus) ? angle + 360 : angle
             let idx = angleAtIndex(angle)
-            if datas[idx].highLighted {
-                datas.forEach { $0.highLighted = false }
+            if datas[idx].isHighlighted {
+                datas.forEach { $0.isHighlighted = false }
             } else {
-                datas.forEach { $0.highLighted = false }
-                datas[idx].highLighted = true
+                datas.forEach { $0.isHighlighted = false }
+                datas[idx].isHighlighted = true
             }
             
 //            print(datas)

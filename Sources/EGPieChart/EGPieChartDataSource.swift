@@ -41,7 +41,7 @@ open class EGPieChartDataSource
     public var description: String {
         return {
             var des = ""
-            forEach { des += "value: \($0.value) content: \($0.content ?? "") highlighted: \($0.highLighted) \n"}
+            forEach { des += "value: \($0.value) content: \($0.content ?? "") highlighted: \($0.isHighlighted) \n"}
             return des
         }()
     }

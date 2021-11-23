@@ -21,28 +21,26 @@ open class EGPieChartRender {
         let outerRadius = chart.outerRadius
         let innerRadius = chart.innerRadius
         let rotation = chart.rotation
-
+        
         context.saveGState()
         defer { context.restoreGState() }
         
         for i in 0..<datas.count {
             let startAngle = rotation.toRadian + (datas.drawAngles[i] - datas.sliceAngles[i]).toRadian * animator.animationProgress
-//            let sweepAngle = datas.sliceAngles[i].toRadian * animationProgress
             let sweepAngle = datas.sliceAngles[i].toRadian
-
+            
             var center = chart.renderCenter
-            if datas[i].highLighted {
-                let distance: CGFloat = 15.0
-                let centerOffset: CGFloat = datas.count == 1 ? 0.0 : distance
+            if datas[i].isHighlighted {
+                let centerOffset: CGFloat = datas.count == 1 ? 0.0 : datas[i].highlightedOffset
                 center = CGPoint(x: center.x + centerOffset * cos(startAngle + sweepAngle / 2),
-                                         y: center.y + centerOffset * sin(startAngle + sweepAngle / 2))
+                                 y: center.y + centerOffset * sin(startAngle + sweepAngle / 2))
             }
             
             let innerArcStartPoint = CGPoint(x: center.x + innerRadius * cos(startAngle + sweepAngle),
-                                         y: center.y + innerRadius * sin(startAngle + sweepAngle))
+                                             y: center.y + innerRadius * sin(startAngle + sweepAngle))
             
             let innerArcEndPoint = CGPoint(x: center.x +  innerRadius * cos(startAngle),
-                                       y: center.y +  innerRadius * sin(startAngle))
+                                           y: center.y +  innerRadius * sin(startAngle))
             
             context.move(to: innerArcEndPoint)
             
@@ -59,7 +57,7 @@ open class EGPieChartRender {
                            startAngle: startAngle + sweepAngle,
                            endAngle: startAngle,
                            clockwise: true)
-//            context.closePath()   // It seems not necessary
+            //            context.closePath()   // It seems not necessary
             context.setStrokeColor(datas.fillColors[i].cgColor)
             context.setFillColor(datas.fillColors[i].cgColor)
             context.drawPath(using: .fill)
@@ -81,11 +79,9 @@ open class EGPieChartRender {
             let valueText = NSString(string: datas[i].content ?? String(format: "%.2f%%", datas.persents[i] * 100))
             let attributes: [NSAttributedString.Key: Any] = [.font: datas[i].valueFont, .foregroundColor: datas[i].valueTextColor]
             let size = valueText.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil).size
-            let r: CGFloat
-            if innerRadius > 0 {
-                r = innerRadius + (outerRadius - innerRadius) * chart.valueOffsetY
-            } else {
-                r = outerRadius * chart.valueOffsetY
+            var r: CGFloat = innerRadius + (outerRadius - innerRadius) * chart.valueOffsetY
+            if datas[i].isHighlighted {
+                r += datas[i].highlightedOffset
             }
             
             let targetAngle = chart.rotation + (datas.drawAngles[i] - sweepAngle) * animator.animationProgress
@@ -118,6 +114,11 @@ open class EGPieChartRender {
             let size = value.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil).size
             
             var r = outerRadius * chart.line1Persentage
+            
+            if datas[i].isHighlighted {
+                r += datas[i].highlightedOffset
+            }
+            
             let line1Length = chart.line1Lenght
             var line2Length = chart.line2Length
             
@@ -130,7 +131,7 @@ open class EGPieChartRender {
             targetX = center.x + r * cos(targetAngle)
             targetY = center.y + r * sin(targetAngle)
             let line1EndPoint = CGPoint(x: targetX, y: targetY)
-        
+            
             var line2EndPoint = CGPoint.zero
             var textPosition: CGPoint
             

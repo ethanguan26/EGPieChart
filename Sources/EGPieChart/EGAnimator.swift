@@ -23,7 +23,7 @@ open class EGAnimator {
     
     var animationDisplayLink: CADisplayLink?
     var animationDuration: TimeInterval = 0.0
-    var animationProgress: CGFloat = 0.0
+    var animationProgress: CGFloat = 1.0
     var animationStartTime: TimeInterval = 0.0
     
     @objc func animationLink() {
@@ -37,7 +37,7 @@ open class EGAnimator {
         }
     }
     
-    open func animate(duration: TimeInterval) {
+    open func animate(_ duration: TimeInterval) {
         animationStartTime = CACurrentMediaTime()
         animationDuration = duration
         if animationDisplayLink == nil {
